@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Layers, AlertTriangle, School, Building2, Users, Radio, Download, X, 
+import {
+  Layers, AlertTriangle, School, Building2, Users, Radio, Download, X,
   ChevronDown, ChevronUp, Mountain, Waves, Activity, CloudRain, Navigation
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -31,6 +31,13 @@ const vulnerabilityLevels = {
   tinggi: { color: '#ef4444', label: 'Tinggi', opacity: 0.6 },
   sedang: { color: '#f59e0b', label: 'Sedang', opacity: 0.5 },
   rendah: { color: '#22c55e', label: 'Rendah', opacity: 0.4 },
+};
+
+// COVID levels and colors (assuming GeoServer colors, adjust if needed)
+const covidLevels = {
+  tinggi: { color: '#ef4444', label: 'Tinggi (3)' },
+  sedang: { color: '#f59e0b', label: 'Sedang (2)' },
+  rendah: { color: '#22c55e', label: 'Rendah (1)' },
 };
 
 // Sample EWS data with different types
@@ -147,18 +154,15 @@ const DisasterMap = () => {
   const mapInstance = useRef<L.Map | null>(null);
   const layersRef = useRef<{ [key: string]: L.LayerGroup }>({});
   const [showSidebar, setShowSidebar] = useState(true);
-  const [expandedSections, setExpandedSections] = useState<string[]>(['vulnerability', 'ews']);
-  
+  const [expandedSections, setExpandedSections] = useState<string[]>(['vulnerability', 'ews', 'covid']);
+
   const [layers, setLayers] = useState<LayerConfig[]>([
-    { id: 'kecamatan', name: 'Kecamatan DIY', icon: <Building2 className="w-4 h-4" />, color: '#6366f1', active: true, type: 'polygon' },
-    { id: 'gempa', name: 'Kerawanan Gempa', icon: <Activity className="w-4 h-4" />, color: '#eab308', active: true, type: 'polygon' },
-    { id: 'longsor', name: 'Kerawanan Longsor', icon: <CloudRain className="w-4 h-4" />, color: '#84cc16', active: false, type: 'polygon' },
-    { id: 'banjir', name: 'Kerawanan Banjir', icon: <Waves className="w-4 h-4" />, color: '#3b82f6', active: false, type: 'polygon' },
-    { id: 'gunungMeletus', name: 'Kerawanan G. Meletus', icon: <Mountain className="w-4 h-4" />, color: '#ef4444', active: false, type: 'polygon' },
-    { id: 'tsunami', name: 'Kerawanan Tsunami', icon: <Navigation className="w-4 h-4" />, color: '#0ea5e9', active: false, type: 'polygon' },
-    { id: 'ews', name: 'Early Warning System', icon: <Radio className="w-4 h-4" />, color: '#f97316', active: true, type: 'point' },
-    { id: 'sekolah', name: 'Sekolah Tangguh', icon: <School className="w-4 h-4" />, color: '#22c55e', active: true, type: 'point' },
-    { id: 'pentahelix', name: 'Pentahelix', icon: <Users className="w-4 h-4" />, color: '#a855f7', active: false, type: 'point' },
+    { id: 'spab', name: 'SPAB', icon: <School className="w-4 h-4" />, color: '#22c55e', active: true, type: 'point' },
+    { id: 'kaltana', name: 'Kaltana', icon: <Building2 className="w-4 h-4" />, color: '#6366f1', active: true, type: 'polygon' },
+    { id: 'pentahelix', name: 'Aksi Pentahelix', icon: <Users className="w-4 h-4" />, color: '#a855f7', active: false, type: 'point' },
+    { id: 'ews', name: 'EWS', icon: <Radio className="w-4 h-4" />, color: '#f97316', active: true, type: 'point' },
+    { id: 'kerawanan', name: 'Kerawanan Kebencanaan', icon: <AlertTriangle className="w-4 h-4" />, color: '#eab308', active: true, type: 'polygon' },
+    { id: 'covid', name: 'COVID-19 DIY', icon: <Activity className="w-4 h-4" />, color: '#ef4444', active: false, type: 'polygon' },
   ]);
 
   const createEWSIcon = (type: keyof typeof ewsTypeConfig, status: string) => {
@@ -236,8 +240,8 @@ const DisasterMap = () => {
       zoomControl: false,
     });
 
-    // Add dark tile layer
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    // Add light tile layer
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
       maxZoom: 19,
     }).addTo(map);
@@ -247,15 +251,13 @@ const DisasterMap = () => {
 
     // Create layer groups
     layersRef.current = {
-      kecamatan: L.layerGroup(),
-      gempa: L.layerGroup(),
-      longsor: L.layerGroup(),
-      banjir: L.layerGroup(),
-      gunungMeletus: L.layerGroup(),
-      tsunami: L.layerGroup(),
-      ews: L.layerGroup(),
-      sekolah: L.layerGroup(),
+      spab: L.layerGroup(),
+      kaltana: L.layerGroup(),
       pentahelix: L.layerGroup(),
+      ews: L.layerGroup(),
+      kerawanan: L.layerGroup(),
+      kecamatan: L.layerGroup(),
+      covid: L.layerGroup(),
     };
 
     // Add Kecamatan polygons
@@ -275,7 +277,7 @@ const DisasterMap = () => {
       polygon.addTo(layersRef.current.kecamatan);
     });
 
-    // Add vulnerability polygons
+    // Add Kerawanan polygons (all vulnerability types combined)
     Object.entries(vulnerabilityPolygons).forEach(([type, zones]) => {
       zones.forEach((zone) => {
         const levelConfig = vulnerabilityLevels[zone.level];
@@ -291,7 +293,7 @@ const DisasterMap = () => {
             <p class="text-sm">Level Kerawanan: <strong>${levelConfig.label}</strong></p>
           </div>
         `);
-        polygon.addTo(layersRef.current[type]);
+        polygon.addTo(layersRef.current.kerawanan);
       });
     });
 
@@ -300,7 +302,7 @@ const DisasterMap = () => {
       const marker = L.marker([point.lat, point.lng], {
         icon: createEWSIcon(point.type, point.status),
       });
-      
+
       // Add animated circle for radar effect
       const config = ewsTypeConfig[point.type];
       const circle = L.circle([point.lat, point.lng], {
@@ -324,7 +326,7 @@ const DisasterMap = () => {
       circle.addTo(layersRef.current.ews);
     });
 
-    // Add Sekolah Tangguh markers with school icon
+    // Add SPAB markers (Sekolah Tangguh)
     sekolahTangguh.forEach((school) => {
       const marker = L.marker([school.lat, school.lng], {
         icon: createSchoolIcon(),
@@ -335,7 +337,7 @@ const DisasterMap = () => {
           <p class="text-sm">Level: ${school.level}</p>
         </div>
       `);
-      marker.addTo(layersRef.current.sekolah);
+      marker.addTo(layersRef.current.spab);
     });
 
     // Add Pentahelix markers
@@ -352,6 +354,16 @@ const DisasterMap = () => {
       `);
       marker.addTo(layersRef.current.pentahelix);
     });
+
+    // Add COVID-19 WMS layer
+    const covidLayer = L.tileLayer.wms('http://localhost:8080/geoserver/wms', {
+      layers: 'MAGANG:covid_diy_poly_dissolve2',
+      format: 'image/png',
+      transparent: true,
+      version: '1.3.0',
+      attribution: 'GeoServer',
+    });
+    covidLayer.addTo(layersRef.current.covid);
 
     // Add active layers to map
     layers.forEach((layer) => {
@@ -384,23 +396,28 @@ const DisasterMap = () => {
   }, [layers]);
 
   const toggleLayer = (id: string) => {
-    setLayers(prev => prev.map(layer => 
+    setLayers(prev => prev.map(layer =>
       layer.id === id ? { ...layer, active: !layer.active } : layer
     ));
   };
 
   const toggleSection = (section: string) => {
-    setExpandedSections(prev => 
-      prev.includes(section) 
+    setExpandedSections(prev =>
+      prev.includes(section)
         ? prev.filter(s => s !== section)
         : [...prev, section]
     );
   };
 
+  const polygonLayers = layers.filter(l => l.type === 'polygon');
+  const pointLayers = layers.filter(l => l.type === 'point');
+
+
+
   const handleDownload = (dataType: string, format: 'shp' | 'kml' | 'geojson') => {
     // Generate GeoJSON data based on type
     let geojsonData: any = { type: 'FeatureCollection', features: [] };
-    
+
     if (dataType === 'ews') {
       geojsonData.features = ewsPoints.map(point => ({
         type: 'Feature',
@@ -446,7 +463,7 @@ const DisasterMap = () => {
 <kml xmlns="http://www.opengis.net/kml/2.2">
   <Document>
     <name>${dataType} DIY</name>`;
-      
+
       geojsonData.features.forEach((feature: any) => {
         if (feature.geometry.type === 'Point') {
           kml += `
@@ -471,11 +488,11 @@ const DisasterMap = () => {
     </Placemark>`;
         }
       });
-      
+
       kml += `
   </Document>
 </kml>`;
-      
+
       const blob = new Blob([kml], { type: 'application/vnd.google-earth.kml+xml' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -497,8 +514,7 @@ const DisasterMap = () => {
     }
   };
 
-  const polygonLayers = layers.filter(l => l.type === 'polygon');
-  const pointLayers = layers.filter(l => l.type === 'point');
+
 
   return (
     <div className="relative w-full h-full">
@@ -508,7 +524,7 @@ const DisasterMap = () => {
       {/* Sidebar */}
       <AnimatePresence>
         {showSidebar && (
-          <motion.div 
+          <motion.div
             initial={{ x: -320, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -320, opacity: 0 }}
@@ -522,7 +538,7 @@ const DisasterMap = () => {
                     <Layers className="w-5 h-5" />
                     LAYER KONTROL
                   </div>
-                  <button 
+                  <button
                     onClick={() => setShowSidebar(false)}
                     className="p-1 hover:bg-secondary rounded"
                   >
@@ -531,155 +547,218 @@ const DisasterMap = () => {
                 </div>
               </div>
 
-              {/* Scrollable Content */}
+              {/* Layer Controls */}
               <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 {/* Vulnerability Section */}
                 <div className="space-y-2">
-                  <button 
+                  <button
                     onClick={() => toggleSection('vulnerability')}
-                    className="w-full flex items-center justify-between p-2 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors"
+                    className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-secondary/50 transition-colors"
                   >
-                    <span className="text-sm font-medium flex items-center gap-2">
-                      <AlertTriangle className="w-4 h-4 text-warning" />
-                      Kerawanan Bencana
-                    </span>
-                    {expandedSections.includes('vulnerability') ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                  </button>
-                  
-                  {expandedSections.includes('vulnerability') && (
-                    <div className="space-y-1 pl-2">
-                      {polygonLayers.filter(l => l.id !== 'kecamatan').map((layer) => (
-                        <button
-                          key={layer.id}
-                          onClick={() => toggleLayer(layer.id)}
-                          className={`w-full flex items-center gap-3 p-2 rounded-lg transition-all text-sm ${
-                            layer.active 
-                              ? 'bg-primary/20 border border-primary/50' 
-                              : 'bg-secondary/30 hover:bg-secondary/50'
-                          }`}
-                        >
-                          <div 
-                            className="w-3 h-3 rounded"
-                            style={{ backgroundColor: layer.color }}
-                          />
-                          <span className="flex-1 text-left">{layer.name}</span>
-                          {layer.icon}
-                        </button>
-                      ))}
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-yellow-500" />
+                      <span className="font-medium text-sm">Kerawanan</span>
                     </div>
-                  )}
+                    {expandedSections.includes('vulnerability') ? (
+                      <ChevronUp className="w-4 h-4" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4" />
+                    )}
+                  </button>
+
+                  <AnimatePresence>
+                    {expandedSections.includes('vulnerability') && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="ml-6 space-y-1 overflow-hidden"
+                      >
+                        {polygonLayers.map((layer) => (
+                          <button
+                            key={layer.id}
+                            onClick={() => toggleLayer(layer.id)}
+                            className={`w-full flex items-center gap-3 p-2 rounded-lg transition-all text-sm ${layer.active
+                              ? 'bg-primary/20 border border-primary/50'
+                              : 'bg-secondary/30 hover:bg-secondary/50'
+                              }`}
+                          >
+                            <div
+                              className="w-4 h-4 rounded"
+                              style={{ backgroundColor: layer.color }}
+                            />
+                            <span className="flex-1 text-left font-medium">{layer.name}</span>
+                            {layer.icon}
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 {/* EWS Section */}
                 <div className="space-y-2">
-                  <button 
+                  <button
                     onClick={() => toggleSection('ews')}
-                    className="w-full flex items-center justify-between p-2 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors"
+                    className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-secondary/50 transition-colors"
                   >
-                    <span className="text-sm font-medium flex items-center gap-2">
-                      <Radio className="w-4 h-4 text-primary" />
-                      Early Warning System
-                    </span>
-                    {expandedSections.includes('ews') ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                  </button>
-                  
-                  {expandedSections.includes('ews') && (
-                    <div className="space-y-2 pl-2">
-                      {ewsPoints.slice(0, 5).map((ews) => {
-                        const config = ewsTypeConfig[ews.type];
-                        return (
-                          <div 
-                            key={ews.id}
-                            className="flex items-center gap-2 p-2 rounded-lg bg-secondary/30 text-xs"
-                          >
-                            <div 
-                              className="w-3 h-3 rounded-full animate-pulse"
-                              style={{ backgroundColor: config.color }}
-                            />
-                            <div className="flex-1 truncate">
-                              <p className="font-medium truncate">{ews.name}</p>
-                              <p className="text-muted-foreground">{config.label}</p>
-                            </div>
-                            <span className={`px-1.5 py-0.5 rounded text-[10px] ${
-                              ews.status === 'warning' ? 'bg-warning/20 text-warning' : 'bg-success/20 text-success'
-                            }`}>
-                              {ews.status}
-                            </span>
-                          </div>
-                        );
-                      })}
+                    <div className="flex items-center gap-2">
+                      <Radio className="w-4 h-4 text-orange-500" />
+                      <span className="font-medium text-sm">EWS</span>
                     </div>
-                  )}
+                    {expandedSections.includes('ews') ? (
+                      <ChevronUp className="w-4 h-4" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4" />
+                    )}
+                  </button>
+
+                  <AnimatePresence>
+                    {expandedSections.includes('ews') && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="ml-6 space-y-1 overflow-hidden"
+                      >
+                        {pointLayers.map((layer) => (
+                          <button
+                            key={layer.id}
+                            onClick={() => toggleLayer(layer.id)}
+                            className={`w-full flex items-center gap-3 p-2 rounded-lg transition-all text-sm ${layer.active
+                              ? 'bg-primary/20 border border-primary/50'
+                              : 'bg-secondary/30 hover:bg-secondary/50'
+                              }`}
+                          >
+                            <div
+                              className="w-4 h-4 rounded-full"
+                              style={{ backgroundColor: layer.color }}
+                            />
+                            <span className="flex-1 text-left font-medium">{layer.name}</span>
+                            {layer.icon}
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
-                {/* Other Layers */}
+                {/* COVID Section */}
                 <div className="space-y-2">
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider px-2">Layer Lainnya</p>
-                  {[...polygonLayers.filter(l => l.id === 'kecamatan'), ...pointLayers].map((layer) => (
-                    <button
-                      key={layer.id}
-                      onClick={() => toggleLayer(layer.id)}
-                      className={`w-full flex items-center gap-3 p-2 rounded-lg transition-all text-sm ${
-                        layer.active 
-                          ? 'bg-primary/20 border border-primary/50' 
-                          : 'bg-secondary/30 hover:bg-secondary/50'
-                      }`}
-                    >
-                      <div 
-                        className={`w-3 h-3 ${layer.type === 'polygon' ? 'rounded' : 'rounded-full'}`}
-                        style={{ backgroundColor: layer.color }}
-                      />
-                      <span className="flex-1 text-left">{layer.name}</span>
-                      {layer.icon}
-                    </button>
-                  ))}
+                  <button
+                    onClick={() => toggleSection('covid')}
+                    className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-secondary/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Activity className="w-4 h-4 text-red-500" />
+                      <span className="font-medium text-sm">Bahaya COVID</span>
+                    </div>
+                    {expandedSections.includes('covid') ? (
+                      <ChevronUp className="w-4 h-4" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4" />
+                    )}
+                  </button>
+
+                  <AnimatePresence>
+                    {expandedSections.includes('covid') && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="ml-6 space-y-1 overflow-hidden"
+                      >
+                        <button
+                          onClick={() => toggleLayer('covid')}
+                          className={`w-full flex items-center gap-3 p-2 rounded-lg transition-all text-sm ${layers.find(l => l.id === 'covid')?.active
+                            ? 'bg-primary/20 border border-primary/50'
+                            : 'bg-secondary/30 hover:bg-secondary/50'
+                            }`}
+                        >
+                          <div
+                            className="w-4 h-4 rounded"
+                            style={{ backgroundColor: '#ef4444' }}
+                          />
+                          <span className="flex-1 text-left font-medium">COVID-19 DIY</span>
+                          <Activity className="w-4 h-4" />
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 {/* Legend */}
-                <div className="space-y-2 border-t border-border/50 pt-4">
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider px-2">Legenda Kerawanan</p>
-                  <div className="space-y-1 pl-2">
-                    {Object.entries(vulnerabilityLevels).map(([key, config]) => (
-                      <div key={key} className="flex items-center gap-2 text-xs">
-                        <div 
-                          className="w-4 h-3 rounded"
-                          style={{ backgroundColor: config.color, opacity: config.opacity }}
-                        />
-                        <span>Kerawanan {config.label}</span>
-                      </div>
-                    ))}
-                  </div>
+                <div className="space-y-2">
+                  <button
+                    onClick={() => toggleSection('legend')}
+                    className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-secondary/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Navigation className="w-4 h-4 text-blue-500" />
+                      <span className="font-medium text-sm">Legend</span>
+                    </div>
+                    {expandedSections.includes('legend') ? (
+                      <ChevronUp className="w-4 h-4" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4" />
+                    )}
+                  </button>
 
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider px-2 mt-3">Legenda EWS</p>
-                  <div className="space-y-1 pl-2">
-                    {Object.entries(ewsTypeConfig).map(([key, config]) => (
-                      <div key={key} className="flex items-center gap-2 text-xs">
-                        <div 
-                          className="w-3 h-3 rounded-full"
-                          style={{ backgroundColor: config.color }}
-                        />
-                        <span>{config.icon} {config.label}</span>
-                      </div>
-                    ))}
-                  </div>
+                  <AnimatePresence>
+                    {expandedSections.includes('legend') && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="ml-6 space-y-2 overflow-hidden"
+                      >
+                        {/* Vulnerability Levels */}
+                        <div className="space-y-1">
+                          <p className="text-xs font-medium text-muted-foreground">Level Kerawanan:</p>
+                          <div className="space-y-1">
+                            {Object.entries(vulnerabilityLevels).map(([key, level]) => (
+                              <div key={key} className="flex items-center gap-2">
+                                <div
+                                  className="w-3 h-3 rounded"
+                                  style={{ backgroundColor: level.color }}
+                                />
+                                <span className="text-xs">{level.label}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
 
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider px-2 mt-3">Legenda Lainnya</p>
-                  <div className="space-y-1 pl-2">
-                    <div className="flex items-center gap-2 text-xs">
-                      <div className="w-4 h-4 rounded-lg bg-green-500 flex items-center justify-center">
-                        <School className="w-2.5 h-2.5 text-white" />
-                      </div>
-                      <span>Sekolah Tangguh</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs">
-                      <div className="w-3 h-3 rounded-full bg-purple-500" />
-                      <span>Pentahelix</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs">
-                      <div className="w-4 h-3 rounded border-2 border-indigo-500 bg-indigo-500/20" />
-                      <span>Kecamatan DIY</span>
-                    </div>
-                  </div>
+                        {/* EWS Types */}
+                        <div className="space-y-1">
+                          <p className="text-xs font-medium text-muted-foreground">Tipe EWS:</p>
+                          <div className="space-y-1">
+                            {Object.entries(ewsTypeConfig).map(([key, config]) => (
+                              <div key={key} className="flex items-center gap-2">
+                                <span className="text-xs">{config.icon}</span>
+                                <span className="text-xs">{config.label}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* COVID Levels */}
+                        <div className="space-y-1">
+                          <p className="text-xs font-medium text-muted-foreground">Level COVID-19:</p>
+                          <div className="space-y-1">
+                            {Object.entries(covidLevels).map(([key, level]) => (
+                              <div key={key} className="flex items-center gap-2">
+                                <div
+                                  className="w-3 h-3 rounded"
+                                  style={{ backgroundColor: level.color }}
+                                />
+                                <span className="text-xs">{level.label}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
             </div>
@@ -700,35 +779,34 @@ const DisasterMap = () => {
       )}
 
       {/* Download Panel */}
-      <motion.div 
-        initial={{ y: 100, opacity: 0 }}
+      <motion.div
+        initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="absolute bottom-4 left-4 z-10"
-        style={{ left: showSidebar ? '21rem' : '1rem' }}
+        className="absolute top-4 right-4 z-10"
       >
-        <div className="glass-card p-4">
-          <div className="flex items-center gap-2 text-primary font-display text-sm mb-3">
+        <div className="glass-card p-3">
+          <div className="flex items-center gap-2 text-primary font-display text-sm mb-2">
             <Download className="w-4 h-4" />
             UNDUH DATA
           </div>
-          <div className="grid grid-cols-2 gap-2 text-xs">
-            <Button variant="glass" size="sm" onClick={() => handleDownload('kerawanan', 'shp')} className="text-xs">
+          <div className="grid grid-cols-2 gap-1 text-xs">
+            <Button variant="glass" size="sm" onClick={() => handleDownload('kerawanan', 'shp')} className="text-xs px-2 py-1 h-7">
               Kerawanan (SHP)
             </Button>
-            <Button variant="glass" size="sm" onClick={() => handleDownload('kerawanan', 'kml')} className="text-xs">
+            <Button variant="glass" size="sm" onClick={() => handleDownload('kerawanan', 'kml')} className="text-xs px-2 py-1 h-7">
               Kerawanan (KML)
             </Button>
-            <Button variant="glass" size="sm" onClick={() => handleDownload('ews', 'shp')} className="text-xs">
+            <Button variant="glass" size="sm" onClick={() => handleDownload('ews', 'shp')} className="text-xs px-2 py-1 h-7">
               EWS (SHP)
             </Button>
-            <Button variant="glass" size="sm" onClick={() => handleDownload('ews', 'kml')} className="text-xs">
+            <Button variant="glass" size="sm" onClick={() => handleDownload('ews', 'kml')} className="text-xs px-2 py-1 h-7">
               EWS (KML)
             </Button>
-            <Button variant="glass" size="sm" onClick={() => handleDownload('kecamatan', 'geojson')} className="text-xs">
+            <Button variant="glass" size="sm" onClick={() => handleDownload('kecamatan', 'geojson')} className="text-xs px-2 py-1 h-7">
               Kecamatan (GeoJSON)
             </Button>
-            <Button variant="glass" size="sm" onClick={() => handleDownload('sekolah', 'geojson')} className="text-xs">
+            <Button variant="glass" size="sm" onClick={() => handleDownload('sekolah', 'geojson')} className="text-xs px-2 py-1 h-7">
               Sekolah (GeoJSON)
             </Button>
           </div>
@@ -736,7 +814,7 @@ const DisasterMap = () => {
       </motion.div>
 
       {/* EWS Status Panel */}
-      <motion.div 
+      <motion.div
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2 }}
@@ -752,7 +830,7 @@ const DisasterMap = () => {
               ewsPoints.filter(e => e.status === 'warning').map((ews) => {
                 const config = ewsTypeConfig[ews.type];
                 return (
-                  <div 
+                  <div
                     key={ews.id}
                     className="flex items-center gap-2 p-2 rounded-lg bg-warning/10 border border-warning/30"
                   >

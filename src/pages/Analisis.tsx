@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { 
-  Shield, 
-  ArrowLeft, 
+import {
+  Shield,
+  ArrowLeft,
   Mountain,
   Waves,
   CloudRain,
@@ -13,13 +13,13 @@ import {
   CheckCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { 
-  AreaChart, 
-  Area, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
   BarChart,
   Bar,
@@ -30,7 +30,7 @@ import {
 
 const Navbar = () => {
   return (
-    <motion.nav 
+    <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/50"
@@ -38,8 +38,8 @@ const Navbar = () => {
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <Shield className="w-6 h-6 text-primary-foreground" />
+            <div className="w-10 h-10 rounded-full flex items-center justify-center">
+              <img src="/bpbd-logo.png" alt="BPBD DIY Logo" className="w-8 h-8 rounded-full" />
             </div>
             <div>
               <h1 className="font-display text-xl tracking-wider">BPBD DIY</h1>
@@ -152,11 +152,11 @@ const Analisis = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
+
       <main className="pt-24 pb-12">
         <div className="container mx-auto px-6">
           {/* Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-12"
@@ -172,7 +172,7 @@ const Analisis = () => {
           </motion.div>
 
           {/* Summary Cards */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
@@ -197,7 +197,7 @@ const Analisis = () => {
           {/* Charts Grid */}
           <div className="grid lg:grid-cols-2 gap-6 mb-8">
             {/* Monthly Trend */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
@@ -209,24 +209,24 @@ const Analisis = () => {
                   <AreaChart data={monthlyData}>
                     <defs>
                       <linearGradient id="colorGempa" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#eab308" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#eab308" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#eab308" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#eab308" stopOpacity={0} />
                       </linearGradient>
                       <linearGradient id="colorBanjir" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                       </linearGradient>
                       <linearGradient id="colorLongsor" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#22c55e" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                     <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} />
                     <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'hsl(var(--card))', 
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'hsl(var(--card))',
                         border: '1px solid hsl(var(--border))',
                         borderRadius: '8px'
                       }}
@@ -245,7 +245,7 @@ const Analisis = () => {
             </motion.div>
 
             {/* By Region */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
@@ -258,9 +258,9 @@ const Analisis = () => {
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                     <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={12} />
                     <YAxis dataKey="name" type="category" stroke="hsl(var(--muted-foreground))" fontSize={12} width={80} />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'hsl(var(--card))', 
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'hsl(var(--card))',
                         border: '1px solid hsl(var(--border))',
                         borderRadius: '8px'
                       }}
@@ -277,7 +277,7 @@ const Analisis = () => {
           </div>
 
           {/* Risk Analysis */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
@@ -293,33 +293,31 @@ const Analisis = () => {
                   className="glass-card-hover p-6"
                 >
                   <div className="flex items-start gap-4 mb-4">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                      item.risk === 'Tinggi' ? 'bg-danger/20 text-danger' :
-                      item.risk === 'Waspada' ? 'bg-warning/20 text-warning' :
-                      'bg-primary/20 text-primary'
-                    }`}>
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${item.risk === 'Tinggi' ? 'bg-danger/20 text-danger' :
+                        item.risk === 'Waspada' ? 'bg-warning/20 text-warning' :
+                          'bg-primary/20 text-primary'
+                      }`}>
                       {item.icon}
                     </div>
                     <div className="flex-1">
                       <h3 className="font-semibold text-lg">{item.type}</h3>
                       <div className="flex items-center gap-3 mt-1">
-                        <span className={`text-xs px-2 py-1 rounded-full ${
-                          item.risk === 'Tinggi' ? 'bg-danger/20 text-danger' :
-                          item.risk === 'Waspada' ? 'bg-warning/20 text-warning' :
-                          'bg-primary/20 text-primary'
-                        }`}>
+                        <span className={`text-xs px-2 py-1 rounded-full ${item.risk === 'Tinggi' ? 'bg-danger/20 text-danger' :
+                            item.risk === 'Waspada' ? 'bg-warning/20 text-warning' :
+                              'bg-primary/20 text-primary'
+                          }`}>
                           Risiko: {item.risk}
                         </span>
                         <span className="text-xs text-muted-foreground flex items-center gap-1">
-                          {item.trend === 'up' ? <TrendingUp className="w-3 h-3 text-danger" /> : 
-                           item.trend === 'down' ? <TrendingDown className="w-3 h-3 text-success" /> :
-                           <Activity className="w-3 h-3 text-muted-foreground" />}
+                          {item.trend === 'up' ? <TrendingUp className="w-3 h-3 text-danger" /> :
+                            item.trend === 'down' ? <TrendingDown className="w-3 h-3 text-success" /> :
+                              <Activity className="w-3 h-3 text-muted-foreground" />}
                           {item.incidents} kejadian
                         </span>
                       </div>
                     </div>
                   </div>
-                  
+
                   <h4 className="text-sm font-medium mb-2 text-primary">Langkah Pencegahan:</h4>
                   <ul className="space-y-1">
                     {item.prevention.map((step, i) => (

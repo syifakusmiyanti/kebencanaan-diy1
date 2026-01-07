@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { 
-  Shield, ArrowLeft, FileText, Download, Book, AlertTriangle, 
+import {
+  Shield, ArrowLeft, FileText, Download, Book, AlertTriangle,
   Users, Building2, CheckCircle, Clock, ExternalLink
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 
 const Navbar = () => {
   return (
-    <motion.nav 
+    <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/50"
@@ -17,8 +17,8 @@ const Navbar = () => {
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <Shield className="w-6 h-6 text-primary-foreground" />
+            <div className="w-10 h-10 rounded-full flex items-center justify-center">
+              <img src="/bpbd-logo.png" alt="BPBD DIY Logo" className="w-8 h-8 rounded-full" />
             </div>
             <div>
               <h1 className="font-display text-xl tracking-wider">BPBD DIY</h1>
@@ -166,7 +166,7 @@ const Dokumen = () => {
   const filteredDocuments = documents.filter(doc => {
     const matchesCategory = selectedCategory === 'all' || doc.category === selectedCategory;
     const matchesSearch = doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          doc.description.toLowerCase().includes(searchTerm.toLowerCase());
+      doc.description.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
@@ -177,11 +177,11 @@ const Dokumen = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
+
       <main className="pt-24 pb-12">
         <div className="container mx-auto px-6">
           {/* Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-12"
@@ -194,13 +194,13 @@ const Dokumen = () => {
               <span className="gradient-text">DOKUMEN</span> KESIAPSIAGAAN
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Akses dokumen perencanaan, rencana kontingensi, dan pedoman kesiapsiagaan 
+              Akses dokumen perencanaan, rencana kontingensi, dan pedoman kesiapsiagaan
               bencana untuk wilayah Daerah Istimewa Yogyakarta
             </p>
           </motion.div>
 
           {/* Search and Filter */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
@@ -230,11 +230,10 @@ const Dokumen = () => {
                       <button
                         key={cat.id}
                         onClick={() => setSelectedCategory(cat.id)}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
-                          selectedCategory === cat.id
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${selectedCategory === cat.id
                             ? 'bg-primary text-primary-foreground'
                             : 'bg-secondary/50 hover:bg-secondary text-foreground'
-                        }`}
+                          }`}
                       >
                         <Icon className="w-4 h-4" />
                         <span className="text-sm">{cat.label}</span>
@@ -247,7 +246,7 @@ const Dokumen = () => {
           </motion.div>
 
           {/* Statistics */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
@@ -304,10 +303,10 @@ const Dokumen = () => {
                           <span className="text-muted-foreground">{doc.size}</span>
                           <span className="flex items-center gap-1 text-muted-foreground">
                             <Clock className="w-3 h-3" />
-                            {new Date(doc.date).toLocaleDateString('id-ID', { 
-                              day: 'numeric', 
-                              month: 'long', 
-                              year: 'numeric' 
+                            {new Date(doc.date).toLocaleDateString('id-ID', {
+                              day: 'numeric',
+                              month: 'long',
+                              year: 'numeric'
                             })}
                           </span>
                         </div>
@@ -315,8 +314,8 @@ const Dokumen = () => {
 
                       {/* Actions */}
                       <div className="flex items-center gap-2 flex-shrink-0">
-                        <Button 
-                          variant="glass" 
+                        <Button
+                          variant="glass"
                           size="sm"
                           onClick={() => handleDownload(doc)}
                         >

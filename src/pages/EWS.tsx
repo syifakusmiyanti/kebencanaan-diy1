@@ -1,13 +1,13 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { 
-  Shield, 
-  ArrowLeft, 
-  Radio, 
-  AlertTriangle, 
-  Mountain, 
-  Waves, 
-  CloudRain, 
+import {
+  Shield,
+  ArrowLeft,
+  Radio,
+  AlertTriangle,
+  Mountain,
+  Waves,
+  CloudRain,
   Activity,
   MapPin,
   Clock,
@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button';
 
 const Navbar = () => {
   return (
-    <motion.nav 
+    <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/50"
@@ -25,8 +25,8 @@ const Navbar = () => {
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <Shield className="w-6 h-6 text-primary-foreground" />
+            <div className="w-10 h-10 rounded-full flex items-center justify-center">
+              <img src="/bpbd-logo.png" alt="BPBD DIY Logo" className="w-8 h-8 rounded-full" />
             </div>
             <div>
               <h1 className="font-display text-xl tracking-wider">BPBD DIY</h1>
@@ -55,61 +55,61 @@ const Navbar = () => {
 };
 
 const ewsData = [
-  { 
-    id: 1, 
-    name: 'EWS Merapi - Kaliadem', 
+  {
+    id: 1,
+    name: 'EWS Merapi - Kaliadem',
     location: 'Kec. Cangkringan, Sleman',
-    type: 'Gunung Api', 
+    type: 'Gunung Api',
     icon: <Mountain className="w-6 h-6" />,
-    status: 'active', 
+    status: 'active',
     lastUpdate: '2 menit lalu',
     level: 'WASPADA',
     levelColor: 'warning',
     description: 'Aktivitas vulkanik normal, pemantauan rutin aktif'
   },
-  { 
-    id: 2, 
-    name: 'EWS Banjir - Sungai Code', 
+  {
+    id: 2,
+    name: 'EWS Banjir - Sungai Code',
     location: 'Kota Yogyakarta',
-    type: 'Banjir', 
+    type: 'Banjir',
     icon: <Waves className="w-6 h-6" />,
-    status: 'active', 
+    status: 'active',
     lastUpdate: '5 menit lalu',
     level: 'SIAGA',
     levelColor: 'primary',
     description: 'Debit air normal, cuaca cerah'
   },
-  { 
-    id: 3, 
-    name: 'EWS Longsor - Kulon Progo', 
+  {
+    id: 3,
+    name: 'EWS Longsor - Kulon Progo',
     location: 'Kec. Samigaluh',
-    type: 'Tanah Longsor', 
+    type: 'Tanah Longsor',
     icon: <CloudRain className="w-6 h-6" />,
-    status: 'warning', 
+    status: 'warning',
     lastUpdate: '1 menit lalu',
     level: 'AWAS',
     levelColor: 'danger',
     description: 'Curah hujan tinggi terdeteksi, potensi longsor'
   },
-  { 
-    id: 4, 
-    name: 'EWS Gempa - Bantul', 
+  {
+    id: 4,
+    name: 'EWS Gempa - Bantul',
     location: 'Kec. Imogiri',
-    type: 'Gempa Bumi', 
+    type: 'Gempa Bumi',
     icon: <Activity className="w-6 h-6" />,
-    status: 'active', 
+    status: 'active',
     lastUpdate: '10 menit lalu',
     level: 'NORMAL',
     levelColor: 'success',
     description: 'Tidak ada aktivitas seismik signifikan'
   },
-  { 
-    id: 5, 
-    name: 'EWS Tsunami - Pantai Selatan', 
+  {
+    id: 5,
+    name: 'EWS Tsunami - Pantai Selatan',
     location: 'Kab. Gunungkidul',
-    type: 'Tsunami', 
+    type: 'Tsunami',
     icon: <Waves className="w-6 h-6" />,
-    status: 'active', 
+    status: 'active',
     lastUpdate: '3 menit lalu',
     level: 'NORMAL',
     levelColor: 'success',
@@ -130,10 +130,10 @@ const RadarAnimation = () => {
           }}
         />
       ))}
-      
+
       {/* Radar sweep */}
       <div className="absolute inset-0 animate-radar">
-        <div 
+        <div
           className="absolute top-1/2 left-1/2 w-1/2 h-0.5 origin-left"
           style={{
             background: 'linear-gradient(90deg, hsl(var(--primary)), transparent)',
@@ -159,11 +159,11 @@ const EWS = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
+
       <main className="pt-24 pb-12">
         <div className="container mx-auto px-6">
           {/* Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-12"
@@ -184,7 +184,7 @@ const EWS = () => {
 
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Radar Display */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
@@ -234,7 +234,7 @@ const EWS = () => {
             </motion.div>
 
             {/* EWS List */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
@@ -251,12 +251,11 @@ const EWS = () => {
                   >
                     <div className="flex items-start gap-4">
                       {/* Icon */}
-                      <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${
-                        ews.levelColor === 'danger' ? 'bg-danger/20 text-danger' :
-                        ews.levelColor === 'warning' ? 'bg-warning/20 text-warning' :
-                        ews.levelColor === 'primary' ? 'bg-primary/20 text-primary' :
-                        'bg-success/20 text-success'
-                      }`}>
+                      <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${ews.levelColor === 'danger' ? 'bg-danger/20 text-danger' :
+                          ews.levelColor === 'warning' ? 'bg-warning/20 text-warning' :
+                            ews.levelColor === 'primary' ? 'bg-primary/20 text-primary' :
+                              'bg-success/20 text-success'
+                        }`}>
                         {ews.icon}
                       </div>
 
@@ -270,12 +269,11 @@ const EWS = () => {
                               {ews.location}
                             </div>
                           </div>
-                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                            ews.levelColor === 'danger' ? 'bg-danger/20 text-danger' :
-                            ews.levelColor === 'warning' ? 'bg-warning/20 text-warning' :
-                            ews.levelColor === 'primary' ? 'bg-primary/20 text-primary' :
-                            'bg-success/20 text-success'
-                          }`}>
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${ews.levelColor === 'danger' ? 'bg-danger/20 text-danger' :
+                              ews.levelColor === 'warning' ? 'bg-warning/20 text-warning' :
+                                ews.levelColor === 'primary' ? 'bg-primary/20 text-primary' :
+                                  'bg-success/20 text-success'
+                            }`}>
                             {ews.level}
                           </span>
                         </div>
@@ -296,9 +294,8 @@ const EWS = () => {
 
                       {/* Status indicator */}
                       <div className="relative">
-                        <div className={`w-3 h-3 rounded-full ${
-                          ews.status === 'warning' ? 'bg-warning' : 'bg-success'
-                        }`} />
+                        <div className={`w-3 h-3 rounded-full ${ews.status === 'warning' ? 'bg-warning' : 'bg-success'
+                          }`} />
                         {ews.status === 'warning' && (
                           <div className="absolute inset-0 w-3 h-3 rounded-full bg-warning animate-ping" />
                         )}
@@ -311,7 +308,7 @@ const EWS = () => {
           </div>
 
           {/* Alert Banner */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}

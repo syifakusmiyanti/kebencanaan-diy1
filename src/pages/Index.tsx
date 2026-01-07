@@ -1,11 +1,11 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { 
-  AlertTriangle, 
-  Map, 
-  Shield, 
-  Users, 
-  Radio, 
+import {
+  AlertTriangle,
+  Map,
+  Shield,
+  Users,
+  Radio,
   TrendingUp,
   ChevronRight,
   Mountain,
@@ -18,7 +18,7 @@ import heroBg from '@/assets/hero-bg.jpg';
 
 const Navbar = () => {
   return (
-    <motion.nav 
+    <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/50"
@@ -26,8 +26,8 @@ const Navbar = () => {
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <Shield className="w-6 h-6 text-primary-foreground" />
+            <div className="w-10 h-10 rounded-full flex items-center justify-center">
+              <img src="/bpbd-logo.png" alt="BPBD DIY Logo" className="w-8 h-8 rounded-full" />
             </div>
             <div>
               <h1 className="font-display text-xl tracking-wider">BPBD DIY</h1>
@@ -60,7 +60,7 @@ const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
       {/* Background Image */}
-      <div 
+      <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${heroBg})` }}
       />
@@ -68,13 +68,13 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/70 to-background" />
       <div className="absolute top-1/4 -left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse-slow" />
       <div className="absolute bottom-1/4 -right-1/4 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1s' }} />
-      
+
       {/* Grid Pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(249,115,22,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(249,115,22,0.03)_1px,transparent_1px)] bg-[size:100px_100px]" />
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
@@ -94,7 +94,7 @@ const HeroSection = () => {
             </h1>
 
             <p className="text-lg text-muted-foreground max-w-lg">
-              Platform Geographic Information System terintegrasi untuk pemantauan, 
+              Platform Geographic Information System terintegrasi untuk pemantauan,
               peringatan dini, dan analisis kebencanaan di Daerah Istimewa Yogyakarta.
             </p>
 
@@ -116,13 +116,13 @@ const HeroSection = () => {
           </motion.div>
 
           {/* Floating Stats Cards */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="relative h-[500px] hidden lg:block"
           >
-            <motion.div 
+            <motion.div
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               className="absolute top-0 right-0 glass-card-hover p-6 w-64"
@@ -132,7 +132,7 @@ const HeroSection = () => {
               <p className="text-muted-foreground">Titik EWS Aktif</p>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               animate={{ y: [0, 10, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
               className="absolute top-1/3 left-0 glass-card-hover p-6 w-64"
@@ -142,7 +142,7 @@ const HeroSection = () => {
               <p className="text-muted-foreground">Sekolah Tangguh</p>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               animate={{ y: [0, -15, 0] }}
               transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
               className="absolute bottom-1/4 right-10 glass-card-hover p-6 w-64"
@@ -152,7 +152,7 @@ const HeroSection = () => {
               <p className="text-muted-foreground">Stakeholder Pentahelix</p>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               animate={{ y: [0, 8, 0] }}
               transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
               className="absolute bottom-0 left-10 glass-card-hover p-6 w-64"
@@ -179,7 +179,7 @@ const DisasterTypesSection = () => {
   return (
     <section className="py-24 relative">
       <div className="container mx-auto px-6">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -229,7 +229,7 @@ const FeaturesSection = () => {
   return (
     <section className="py-24 relative bg-gradient-to-b from-transparent via-primary/5 to-transparent">
       <div className="container mx-auto px-6">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -267,7 +267,7 @@ const CTASection = () => {
   return (
     <section className="py-24 relative">
       <div className="container mx-auto px-6">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}

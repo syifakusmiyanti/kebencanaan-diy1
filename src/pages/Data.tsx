@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { 
-  Shield, 
-  ArrowLeft, 
+import {
+  Shield,
+  ArrowLeft,
   Download,
   FileJson,
   Map as MapIcon,
@@ -21,7 +21,7 @@ import { toast } from 'sonner';
 
 const Navbar = () => {
   return (
-    <motion.nav 
+    <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/50"
@@ -29,8 +29,8 @@ const Navbar = () => {
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <Shield className="w-6 h-6 text-primary-foreground" />
+            <div className="w-10 h-10 rounded-full flex items-center justify-center">
+              <img src="/bpbd-logo.png" alt="BPBD DIY Logo" className="w-8 h-8 rounded-full" />
             </div>
             <div>
               <h1 className="font-display text-xl tracking-wider">BPBD DIY</h1>
@@ -130,11 +130,11 @@ const Data = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
+
       <main className="pt-24 pb-12">
         <div className="container mx-auto px-6">
           {/* Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-12"
@@ -150,7 +150,7 @@ const Data = () => {
           </motion.div>
 
           {/* Search & Filter */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
@@ -172,11 +172,10 @@ const Data = () => {
                   <button
                     key={format}
                     onClick={() => setSelectedFormat(selectedFormat === format ? null : format)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                      selectedFormat === format 
-                        ? 'bg-primary text-primary-foreground' 
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${selectedFormat === format
+                        ? 'bg-primary text-primary-foreground'
                         : 'bg-secondary hover:bg-secondary/80'
-                    }`}
+                      }`}
                   >
                     {format}
                   </button>
@@ -186,7 +185,7 @@ const Data = () => {
           </motion.div>
 
           {/* Format Info Cards */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
@@ -221,12 +220,11 @@ const Data = () => {
                 <div className="flex flex-col md:flex-row md:items-center gap-6">
                   {/* Icon & Info */}
                   <div className="flex items-start gap-4 flex-1">
-                    <div className={`w-14 h-14 rounded-xl flex items-center justify-center shrink-0 ${
-                      layer.color === 'danger' ? 'bg-danger/20 text-danger' :
-                      layer.color === 'success' ? 'bg-success/20 text-success' :
-                      layer.color === 'primary' ? 'bg-primary/20 text-primary' :
-                      'bg-accent/20 text-accent'
-                    }`}>
+                    <div className={`w-14 h-14 rounded-xl flex items-center justify-center shrink-0 ${layer.color === 'danger' ? 'bg-danger/20 text-danger' :
+                        layer.color === 'success' ? 'bg-success/20 text-success' :
+                          layer.color === 'primary' ? 'bg-primary/20 text-primary' :
+                            'bg-accent/20 text-accent'
+                      }`}>
                       {layer.icon}
                     </div>
                     <div>
@@ -263,7 +261,7 @@ const Data = () => {
           </div>
 
           {/* Download All */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
