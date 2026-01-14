@@ -1,8 +1,12 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Shield, ArrowLeft } from 'lucide-react';
+import { Shield, ArrowLeft, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import DisasterMap from '@/components/DisasterMap';
+import DownloadModal from '@/components/DownloadModal';
+
+
 
 const Navbar = () => {
   return (
@@ -45,12 +49,47 @@ const Navbar = () => {
 };
 
 const Peta = () => {
+  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
+  const [ewsData, setEwsData] = useState<any[]>([]);
+
+  // Lock scroll on mount, unlock on unmount
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
+
+  // Function to handle download button click
+  const handleDownloadClick = () => {
+    setIsDownloadModalOpen(true);
+  };
+
+  // Function to handle data updates from DisasterMap
+  const handleDataUpdate = (data: any[]) => {
+    setEwsData(data);
+  };
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="fixed inset-0 overflow-hidden">
       <Navbar />
-      <div className="pt-20 h-screen">
-        <DisasterMap />
+      <DisasterMap onDataUpdate={handleDataUpdate} />
+      {/* Floating Controls Container */}
+      <div className="absolute bottom-16 right-6 z-50">
+        <Button
+          onClick={handleDownloadClick}
+          className="bg-background/90 backdrop-blur-sm border border-border/50 shadow-lg hover:bg-background hover:shadow-xl transition-all duration-200 rounded-full px-4 py-2 text-sm font-medium"
+          size="sm"
+        >
+          <Download className="w-4 h-4 mr-2" />
+          Unduh Data
+        </Button>
       </div>
+      <DownloadModal
+        isOpen={isDownloadModalOpen}
+        onClose={() => setIsDownloadModalOpen(false)}
+        ewsData={ewsData}
+      />
     </div>
   );
 };
