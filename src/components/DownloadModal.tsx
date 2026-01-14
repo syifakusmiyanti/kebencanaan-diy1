@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Download, MapPin, Layers, FileText, FileSpreadsheet, File } from 'lucide-react';
+import { X, Download, Layers, FileText, FileSpreadsheet, File } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -15,7 +15,6 @@ interface DownloadModalProps {
 const DownloadModal = ({ isOpen, onClose, ewsData }: DownloadModalProps) => {
     const [selectedDataTypes, setSelectedDataTypes] = useState<string[]>([]);
     const [selectedFormat, setSelectedFormat] = useState<string>('geojson');
-    const [openInGoogleMaps, setOpenInGoogleMaps] = useState<boolean>(false);
 
     if (!isOpen) return null;
 
@@ -105,11 +104,6 @@ const DownloadModal = ({ isOpen, onClose, ewsData }: DownloadModalProps) => {
                     await downloadGeoServerData(selectedFormat);
                 }
             }
-
-            // Open in Google Maps if checkbox is checked
-            if (openInGoogleMaps) {
-                handleOpenInGoogleMaps();
-            }
         } catch (error) {
             console.error('Download error:', error);
             // You could add toast notification here
@@ -153,18 +147,7 @@ const DownloadModal = ({ isOpen, onClose, ewsData }: DownloadModalProps) => {
         URL.revokeObjectURL(url);
     };
 
-    const openInGoogleMaps = () => {
-        if (selectedDataTypes.includes('points') && ewsData.length > 0) {
-            // Create Google Maps URL with markers
-            const baseUrl = 'https://www.google.com/maps/d/u/0/edit?mid=';
-            const markers = ewsData.map((point: any) =>
-                `${point.lat},${point.lon}`
-            ).join('|');
 
-            // For now, just open Google Maps - you might want to create a custom map
-            window.open('https://maps.google.com', '_blank');
-        }
-    };
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
@@ -252,27 +235,7 @@ const DownloadModal = ({ isOpen, onClose, ewsData }: DownloadModalProps) => {
                         </>
                     )}
 
-                    <Separator />
 
-                    {/* Additional Options */}
-                    <div>
-                        <h3 className="text-sm font-medium text-foreground mb-3">Opsi Tambahan</h3>
-                        <div className="flex items-center space-x-3">
-                            <Checkbox
-                                id="google-maps"
-                                checked={openInGoogleMaps}
-                                onCheckedChange={(checked) => setOpenInGoogleMaps(checked as boolean)}
-                                disabled={selectedDataTypes.length === 0}
-                            />
-                            <Label
-                                htmlFor="google-maps"
-                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center gap-2"
-                            >
-                                <MapPin className="w-4 h-4" />
-                                Lihat di Google Maps
-                            </Label>
-                        </div>
-                    </div>
                 </div>
 
                 {/* Footer */}
@@ -286,7 +249,7 @@ const DownloadModal = ({ isOpen, onClose, ewsData }: DownloadModalProps) => {
                         className="bg-primary hover:bg-primary/90"
                     >
                         <Download className="w-4 h-4 mr-2" />
-                        {openInGoogleMaps ? 'Unduh & Buka di Google Maps' : 'Unduh'}
+                        Unduh
                     </Button>
                 </div>
             </div>
